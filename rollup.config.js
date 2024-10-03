@@ -12,6 +12,7 @@ import pkg from './package.json';
 const mode = process.env.NODE_ENV;
 const dev = mode === 'development';
 const legacy = !!process.env.SAPPER_LEGACY_BUILD;
+import copy from 'rollup-plugin-copy';
 
 const onwarn = (warning, onwarn) =>
 	(warning.code === 'MISSING_EXPORT' && /'preload'/.test(warning.message)) ||
@@ -23,6 +24,15 @@ export default {
 		input: config.client.input(),
 		output: config.client.output(),
 		plugins: [
+			copy({
+				targets: [{
+					src: 'node_modules/bootstrap/dist/**/*',
+					dest: 'static/vendor/bootstrap'
+				},{
+					src: 'node_modules/jquery/dist/**/*',
+					dest: 'static/vendor/jquery'
+				}]
+			}),
 			replace({
 				preventAssignment: true,
 				values:{
